@@ -2,9 +2,6 @@ import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import started from 'electron-squirrel-startup'
 
-// TODO: At present, the packaging of Electron-Forge has bugs, and forge-video-env.d.ts is not packaged in@electron-forge/plugin-vite, the following statement is required.
-declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
-declare const MAIN_WINDOW_VITE_NAME: string
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit()

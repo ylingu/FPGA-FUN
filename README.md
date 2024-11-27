@@ -2,6 +2,10 @@
 
 Electron + Vite + TypeScript + Vue Project Template(Personal Use)
 
+# Environment
+
+node: v23.3.0
+
 # Usage
 
 ```sh
