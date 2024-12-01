@@ -1,7 +1,7 @@
 {
-  "name": "vue-app",
-  "version": "0.0.0",
-  "description": "An electron-vue app",
+  "name": "fpga-fun",
+  "version": "0.0.1",
+  "description": "FPGA playground",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
+    "element-plus": "^2.9.0",
+    "fabric": "^6.5.1",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
@@ -42,8 +44,8 @@
     "vue-tsc": "^2.1.10"
   },
   "author": {
-    "name": "Your Name",
-    "email": "example@example.com"
+    "name": "Ylingu",
+    "email": "wzorlite@gmail.com"
   },
   "license": "MIT"
 }
