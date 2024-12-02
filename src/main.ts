@@ -53,8 +53,9 @@ const readPort = async () => {
       try {
         data = await readFile(portInfoPath, 'utf8')
         break
-      } catch (e: any) {
-        if (e.code !== 'ENOENT') {
+      } catch (e) {
+        const code = (e as { code: string }).code
+        if (code !== 'ENOENT') {
           await new Promise((resolve) => setTimeout(resolve, 100))
         } else {
           throw e
@@ -63,7 +64,7 @@ const readPort = async () => {
     }
     const json = JSON.parse(data)
     apiPort = json.port
-  } catch (e: any) {
+  } catch (e) {
     console.error(e)
     app.quit()
   }

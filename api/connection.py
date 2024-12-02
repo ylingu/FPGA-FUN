@@ -4,6 +4,7 @@ import numpy as np
 import os
 import cv2
 import shutil
+import serial.tools.list_ports
 
 
 class Connection(ABC):
@@ -37,3 +38,12 @@ class VisualConnection(Connection):
         image_path = os.path.join(self.save_dir, f"image_{self.counter}.png")
         cv2.imwrite(image_path, image)
         self.counter += 1
+
+
+def get_available_ports():
+    try:
+        ports = serial.tools.list_ports.comports()
+        serial_ports = [port.name for port in ports]
+        return {"serial_ports": serial_ports}
+    except Exception as e:
+        raise e

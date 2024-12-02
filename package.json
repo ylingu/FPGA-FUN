@@ -1,6 +1,6 @@
 {
   "name": "fpga-fun",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "FPGA playground",
   "main": ".vite/build/main.js",
   "scripts": {
@@ -13,6 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.9.0",
     "fabric": "^6.5.1",

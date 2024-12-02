@@ -53,6 +53,8 @@ build/Release
 
 out/
 
+port.json
+
 # Python-generated files
 __pycache__/
 *.py[oc]

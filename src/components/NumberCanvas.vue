@@ -4,14 +4,17 @@
     <el-button type="primary" @click="clear">Clear</el-button>
     <el-button type="primary" @click="predict">Predict</el-button>
   </el-button-group>
+  <p v-if="prediction !== null">Prediction: {{ prediction }}</p>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { Canvas, PencilBrush } from 'fabric'
+import { dataURLtoBlob } from '@/utils'
 
 let canvas: Canvas | null = null
 let port: number | null = null
+const prediction = ref<number | null>(null)
 
 onMounted(() => {
   canvas = new Canvas('number', { isDrawingMode: true })
@@ -21,27 +24,10 @@ onMounted(() => {
   canvas.freeDrawingBrush.color = 'black'
 })
 
-const dataURLtoBlob = (dataurl: string): Blob => {
-  const arr = dataurl.split(',');
-  const mimeMatch = arr[0].match(/:(.*?);/);
-  if (!mimeMatch) {
-    throw new Error('Invalid data URL');
-  }
-  const mime = mimeMatch[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-
-  return new Blob([u8arr], { type: mime });
-}
-
 const clear = () => {
   canvas?.clear()
   canvas!.backgroundColor = 'white'
+  prediction.value = null
 }
 
 const predict = async () => {
@@ -49,7 +35,7 @@ const predict = async () => {
   const dataURL = canvas!.toDataURL({
     format: 'png',
     quality: 1,
-    multiplier: 1
+    multiplier: 0.0625 // 将512x512转为32x32，减小传输时延便于后端预测
   })
   let blob: Blob
   try {
@@ -62,13 +48,18 @@ const predict = async () => {
   formData.append('file', blob, 'canvas.png')
 
   try {
-    await fetch(`http://localhost:${port}/api/predict`, {
+    const response = await fetch(`http://localhost:${port}/api/predict`, {
       method: 'POST',
       body: formData
     })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.detail || 'Unknown Error')
+    }
+    const data = await response.json()
+    prediction.value = data.result
   } catch (error) {
-    console.error('Error uploading image:', error)
-
+    console.error(error)
   }
 }
 </script>

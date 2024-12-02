@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    electronAPI: { async getPort: () => Promise<number | null> }
+    electronAPI: { getPort: () => Promise<number | null> }
   }
 }
 

@@ -10,10 +10,17 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/number',
-      name: 'number',
-      component: () => import('../views/NumberView.vue'),
-    }
+      path: '/apps',
+      name: 'apps',
+      component: () => import('../views/AppsView.vue'),
+      children: [
+        {
+          path: 'number',
+          name: 'number',
+          component: () => import('../components/NumberCanvas.vue'),
+        },
+      ],
+    },
   ],
 })
 

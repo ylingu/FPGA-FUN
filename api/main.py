@@ -7,13 +7,13 @@ import uvicorn
 import json
 from predict import predict_number
 from depedencies import get_connection
-from connection import Connection, Com
+from connection import Connection, Com, get_available_ports
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=r"^http://localhost:\d+$",
-    allow_methods=["POST"],
+    allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
 )
 
@@ -24,7 +24,16 @@ def start_server(port):
     server.run()
 
 
-@app.post("/api/create_com")
+@app.get("/api/serial_ports")
+def get_serial_ports():
+    try:
+        serial_ports = get_available_ports()
+        return serial_ports
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/create_com/{port}")
 def create_com(port: str | None = None):
     try:
         com = Com(port)
