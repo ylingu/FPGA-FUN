@@ -1,12 +1,13 @@
-from fastapi import FastAPI, File, UploadFile, Depends
+from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import threading
-from utils import find_free_port, Com
+from utils import find_free_port
 import uvicorn
 import json
 from predict import predict_number
-from depedencies import get_com
+from depedencies import get_connection
+from connection import Connection, Com
 
 app = FastAPI()
 app.add_middleware(
@@ -27,21 +28,22 @@ def start_server(port):
 def create_com(port: str | None = None):
     try:
         com = Com(port)
-        app.state.com = com
-        return {"status": "success"}
+        app.state.con = com
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(400, detail=str(e))
 
 
 @app.post("/api/predict")
-async def predict(file: UploadFile = File(...), com: Com = Depends(get_com)):
+async def predict(
+    file: UploadFile = File(...), con: Connection = Depends(get_connection)
+):
     try:
         content = await file.read()
         result, figure = predict_number(content)
-        com.write(figure)
+        con.write(figure)
         return {"result": result}
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(400, detail=str(e))
 
 
 def main():

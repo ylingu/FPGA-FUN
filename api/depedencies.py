@@ -1,12 +1,13 @@
 from fastapi import HTTPException
 from starlette.requests import Request
-from utils import Com
+from connection import Connection, VisualConnection
 
 
-def get_com(request: Request) -> Com:
-    if not hasattr(request.app.state, "com"):
+def get_connection(request: Request) -> Connection:
+    if not hasattr(request.app.state, "con"):
+        request.app.state.con = VisualConnection()
         raise HTTPException(
             status_code=400,
-            detail="COM口尚未创建。请先调用 /api/create_com 创建COM口。",
+            detail="The COM port has not been created yet, use VisualConnection",
         )
-    return request.app.state.com
+    return request.app.state.con
