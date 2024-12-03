@@ -1,3 +1,6 @@
+# nuitka-project: --standalone
+# nuitka-project: --include-data-dir={MAIN_DIRECTORY}/data=data
+
 from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os

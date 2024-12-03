@@ -3,7 +3,7 @@ import numpy as np
 import onnxruntime
 from pathlib import Path
 
-BASE_PATH = Path(__file__).parent
+BASE_PATH = Path(__file__).parent / "data"
 
 model = onnxruntime.InferenceSession(BASE_PATH / "model.onnx")
 figures: np.ndarray = np.load(BASE_PATH / "figures.npy")

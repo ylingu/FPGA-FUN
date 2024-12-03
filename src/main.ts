@@ -15,7 +15,12 @@ if (started) {
 Menu.setApplicationMenu(null)
 
 const startServer = () => {
-  const server = spawn.spawn('python', [path.join(__dirname, '../../api/main.py')])
+  let server: spawn.ChildProcessWithoutNullStreams
+  if (app.isPackaged) {
+    server = spawn.spawn(path.resolve(process.resourcesPath, 'main.dist', 'main.exe'))
+  } else {
+    server = spawn.spawn('python', [path.join(__dirname, '../../api/main.py')])
+  }
   server.stdout.on('data', (data) => {
     console.log(`${data}`)
   })
@@ -34,7 +39,6 @@ const createWindow = () => {
     },
   })
   // and load the index.html of the app.
-  //
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
@@ -42,11 +46,18 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools()
+  }
 }
 
 const readPort = async () => {
-  const portInfoPath = path.join(__dirname, '../../api/port.json')
+  let portInfoPath: string
+  if (app.isPackaged) {
+    portInfoPath = path.resolve(process.resourcesPath, 'main.dist', 'port.json')
+  } else {
+    portInfoPath = path.resolve(__dirname, '../../api/port.json')
+  }
   try {
     let data: string
     while (true) {

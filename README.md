@@ -21,12 +21,11 @@ The pin binding is as shown in the figure:
 ```sh
 # Install dependencies
 npm install
+cd api && uv sync
 # Run the app in development mode
 npm run start
 # Package the app
 npm run package
 # Make the app
 npm run make
-# Publish the app
-npm run publish
 ```
