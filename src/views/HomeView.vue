@@ -15,8 +15,7 @@
         </el-select>
       </el-col>
       <el-col :span="3" :offset="1">
-        <el-button
-type="primary" :icon="Cpu" @click="() => {
+        <el-button type="primary" :icon="Cpu" @click="() => {
           $router.push('/apps/number')
           createCom()
         }">Start</el-button>

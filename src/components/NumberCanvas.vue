@@ -1,10 +1,17 @@
 <template>
-  <canvas id="number" width="512px" height="512px"></canvas>
-  <el-button-group>
-    <el-button type="primary" @click="clear">Clear</el-button>
-    <el-button type="primary" @click="predict">Predict</el-button>
-  </el-button-group>
-  <p v-if="prediction !== null">Prediction: {{ prediction }}</p>
+    <el-row justify="center">
+      <canvas id="number" width="512px" height="512px" />
+    </el-row>
+    <el-row class="spacer-2"></el-row>
+    <el-row justify="center">
+      <el-button-group>
+        <el-button type="primary" @click="clear">Clear</el-button>
+        <el-button type="primary" @click="predict">Predict</el-button>
+      </el-button-group>
+    </el-row>
+    <el-row justify="center">
+      <el-text v-if="prediction !== null" size="large" type="info">Prediction: {{ prediction }}</el-text>
+    </el-row>
 </template>
 
 <script setup lang="ts">
@@ -67,5 +74,9 @@ const predict = async () => {
 <style scoped>
 canvas {
   border: 2px solid #000;
+}
+
+.spacer-2 {
+  height: 2vh;
 }
 </style>
