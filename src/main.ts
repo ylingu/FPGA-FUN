@@ -6,6 +6,7 @@ import { promisify } from 'util'
 import * as fs from 'fs'
 
 const readFile = promisify(fs.readFile)
+const unlinkFile = promisify(fs.unlink)
 
 let apiPort: number | null = null
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -19,7 +20,7 @@ const startServer = () => {
   if (app.isPackaged) {
     server = spawn.spawn(path.resolve(process.resourcesPath, 'main.dist', 'main.exe'))
   } else {
-    server = spawn.spawn('python', [path.join(__dirname, '../../api/main.py')])
+    server = spawn.spawn('uv', ['run', path.join(__dirname, '../../api/main.py')])
   }
   server.stdout.on('data', (data) => {
     console.log(`${data}`)
@@ -75,6 +76,7 @@ const readPort = async () => {
     }
     const json = JSON.parse(data)
     apiPort = json.port
+    await unlinkFile(portInfoPath)
   } catch (e) {
     console.error(e)
     app.quit()

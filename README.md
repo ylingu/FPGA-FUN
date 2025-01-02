@@ -24,6 +24,8 @@ npm install
 cd api && uv sync
 # Run the app in development mode
 npm run start
+# Build Python backend
+npm run build
 # Package the app
 npm run package
 # Make the app

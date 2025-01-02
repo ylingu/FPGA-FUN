@@ -26,7 +26,7 @@ class Com(Connection):
 
 
 class VisualConnection(Connection):
-    def __init__(self, save_dir: str = "out"):
+    def __init__(self, save_dir: str = "output"):
         self.save_dir = save_dir
         if os.path.exists(save_dir):
             shutil.rmtree(save_dir)

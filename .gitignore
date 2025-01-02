@@ -52,8 +52,7 @@ build/Release
 .vite/
 
 out/
-
-port.json
+output/
 
 # Python-generated files
 __pycache__/

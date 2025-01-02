@@ -4,9 +4,7 @@
 from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import threading
 from utils import find_free_port
-import uvicorn
 import json
 from predict import predict_number
 from depedencies import get_connection
@@ -19,12 +17,6 @@ app.add_middleware(
     allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
 )
-
-
-def start_server(port):
-    config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
-    server = uvicorn.Server(config)
-    server.run()
 
 
 @app.get("/api/serial_ports")
@@ -61,10 +53,10 @@ async def predict(
 def main():
     port = find_free_port()
     port_info_path = os.path.join(os.path.dirname(__file__), "port.json")
-    threading.Thread(target=start_server, args=(port,)).start()
     with open(port_info_path, "w") as f:
         json.dump({"port": port}, f)
-
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
 if __name__ == "__main__":
     main()
