@@ -9,6 +9,7 @@ import json
 from predict import predict_number
 from depedencies import get_connection
 from connection import Connection, Com, get_available_ports
+from type import Matrix
 
 app = FastAPI()
 app.add_middleware(
@@ -50,13 +51,25 @@ async def predict(
         raise HTTPException(400, detail=str(e))
 
 
+@app.post("/api/conway")
+async def conway(data: Matrix, con: Connection = Depends(get_connection)):
+    matrix = data.matrix
+    print(matrix)
+    try:
+        con.write(matrix)
+    except Exception as e:
+        raise HTTPException(400, detail=str(e))
+
+
 def main():
     port = find_free_port()
     port_info_path = os.path.join(os.path.dirname(__file__), "port.json")
     with open(port_info_path, "w") as f:
         json.dump({"port": port}, f)
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+
+    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info", reload=True)
+
 
 if __name__ == "__main__":
     main()
