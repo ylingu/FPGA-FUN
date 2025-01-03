@@ -19,6 +19,11 @@ const router = createRouter({
           name: 'number',
           component: () => import('../components/NumberCanvas.vue'),
         },
+        {
+          path: 'conway',
+          name: 'conway',
+          component: () => import('../components/ConwayGame.vue'),
+        }
       ],
     },
     {
