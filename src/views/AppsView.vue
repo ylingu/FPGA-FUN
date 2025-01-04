@@ -24,3 +24,9 @@
 import Counter8Icon from '@/components/icons/IconCounter8.vue'
 import SmartToyIcon from '@/components/icons/IconSmartToy.vue'
 </script>
+
+<style scoped>
+.el-menu-item {
+  user-select: none;
+}
+</style>

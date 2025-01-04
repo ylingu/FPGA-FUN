@@ -15,7 +15,8 @@
         </el-select>
       </el-col>
       <el-col :span="3" :offset="1">
-        <el-button type="primary" :icon="Cpu" @click="() => {
+        <el-button
+type="primary" :icon="Cpu" @click="() => {
           $router.push('/apps/number')
           createCom()
         }">Start</el-button>
@@ -27,9 +28,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Cpu } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 const serialPorts = ref<string[]>([])
-const com = ref('')
+const com = ref('COM')
 
 const fetchSerialPorts = async () => {
   const port = await window.electronAPI.getPort()
@@ -57,6 +59,7 @@ const createCom = async () => {
     })
     if (!response.ok) {
       const errorData = await response.json()
+      ElMessage.error('Unable to create COM port')
       throw new Error(errorData.detail || 'Unknown Error')
     }
   }

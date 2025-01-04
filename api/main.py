@@ -7,6 +7,7 @@ import os
 from utils import find_free_port
 import json
 from predict import predict_number
+from conway import matrix_transpose
 from depedencies import get_connection
 from connection import Connection, Com, get_available_ports
 from type import Matrix
@@ -53,8 +54,7 @@ async def predict(
 
 @app.post("/api/conway")
 async def conway(data: Matrix, con: Connection = Depends(get_connection)):
-    matrix = data.matrix
-    print(matrix)
+    matrix = matrix_transpose(data.matrix)
     try:
         con.write(matrix)
     except Exception as e:
