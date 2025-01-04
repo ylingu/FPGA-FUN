@@ -8,8 +8,7 @@ from typing import Protocol
 
 
 class Connection(Protocol):
-    def write(self, content: np.ndarray | list[list[int]]):
-        ...
+    def write(self, content: np.ndarray): ...
 
 
 class Com:
@@ -19,9 +18,7 @@ class Com:
         except Exception as e:
             raise e
 
-    def write(self, content: np.ndarray | list[list[int]]):
-        if isinstance(content, list):
-            content = np.array(content, dtype=np.uint8)
+    def write(self, content: np.ndarray):
         byte_array = np.packbits(content.T.flatten()).tobytes()
         self.ser.write(byte_array)
 
@@ -34,9 +31,7 @@ class VisualConnection:
         os.makedirs(self.save_dir, exist_ok=True)
         self.counter = 0
 
-    def write(self, content: np.ndarray | list[list[int]]):
-        if isinstance(content, list):
-            content = np.array(content, dtype=np.uint8)
+    def write(self, content: np.ndarray):
         image = (content * 255).astype(np.uint8)
         image_path = os.path.join(self.save_dir, f"image_{self.counter}.png")
         cv2.imwrite(image_path, image)

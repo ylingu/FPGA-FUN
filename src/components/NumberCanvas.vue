@@ -1,23 +1,24 @@
 <template>
-    <el-row justify="center">
-      <canvas id="number" width="512px" height="512px" />
-    </el-row>
-    <el-row class="spacer-2"></el-row>
-    <el-row justify="center">
-      <el-button-group>
-        <el-button type="primary" @click="clear">Clear</el-button>
-        <el-button type="primary" @click="predict">Predict</el-button>
-      </el-button-group>
-    </el-row>
-    <el-row justify="center">
-      <el-text v-if="prediction !== null" size="large" type="info">Prediction: {{ prediction }}</el-text>
-    </el-row>
+  <el-row justify="center">
+    <canvas id="number" width="512px" height="512px" />
+  </el-row>
+  <el-row class="spacer-2"></el-row>
+  <el-row justify="center">
+    <el-button-group>
+      <el-button type="primary" @click="clear">Clear</el-button>
+      <el-button type="primary" @click="predict">Predict</el-button>
+    </el-button-group>
+  </el-row>
+  <el-row justify="center">
+    <el-text v-if="prediction !== null" size="large" type="info">Prediction: {{ prediction }}</el-text>
+  </el-row>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { Canvas, PencilBrush } from 'fabric'
 import { dataURLtoBlob } from '@/utils'
+import { ElMessage } from 'element-plus'
 
 let canvas: Canvas | null = null
 let port: number | null = null
@@ -61,6 +62,7 @@ const predict = async () => {
     })
     if (!response.ok) {
       const errorData = await response.json()
+      ElMessage.warning('The COM port is currently unavailable, use Visual Connection.')
       throw new Error(errorData.detail || 'Unknown Error')
     }
     const data = await response.json()
