@@ -124,6 +124,7 @@ const clear = async () => {
     currentCells[i].fill(0)
   }
   isRunning.value = false
+  sketch.noLoop()
   refresh()
   await send()
 }

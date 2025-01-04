@@ -5,7 +5,7 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
-    "build": "python -m nuitka api/main.py",
+    "build": "uv run -m nuitka api/main.py",
     "package": "electron-forge package",
     "make": "electron-forge make --skip-package",
     "type-check": "vue-tsc --build --force",

@@ -3,7 +3,7 @@ requires-python = ">=3.12"
 resolution-markers = [
     "platform_system == 'Darwin'",
     "platform_machine == 'aarch64' and platform_system == 'Linux'",
-    "(platform_machine != 'aarch64' and platform_system != 'Darwin') or (platform_system != 'Darwin' and platform_system != 'Linux')",
+    "(platform_machine != 'aarch64' and platform_system == 'Linux') or (platform_system != 'Darwin' and platform_system != 'Linux')",
 ]
 
 [[package]]
@@ -59,7 +59,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "nuitka", specifier = ">=2.5.4" }]
+dev = [{ name = "nuitka", specifier = ">=2.5.9" }]
 
 [[package]]
 name = "cffi"
@@ -164,7 +164,7 @@ name = "humanfriendly"
 version = "10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyreadline3", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+    { name = "pyreadline3", marker = "(platform_machine != 'aarch64' and platform_system == 'Linux' and sys_platform == 'win32') or (platform_system != 'Darwin' and platform_system != 'Linux' and sys_platform == 'win32')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/cc/3f/2c29224acb2e2df4d2046e4c73ee2662023c58ff5b113c4c1adac0886c43/humanfriendly-10.0.tar.gz", hash = "sha256:6b0b831ce8f15f7300721aa49829fc4e83921a9a301cc7f606be6686a2288ddc", size = 360702 }
 wheels = [
@@ -191,13 +191,13 @@ wheels = [
 
 [[package]]
 name = "nuitka"
-version = "2.5.4"
+version = "2.5.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ordered-set" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3a/db/26044ca82190af2a3f930ae4f681a5486deb196d203b5ff63c3e43443c9c/Nuitka-2.5.4.tar.gz", hash = "sha256:52f3ec8df460d567362d3adf9e722534e07f4cc7bf51c2da874c86ba4103c6c1", size = 3779553 }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/4f/7fbc65f7eafac14e426e24318ae49755bf5af8cc8da5784083da9959f03f/Nuitka-2.5.9.tar.gz", hash = "sha256:6cfb37449c9dd60bf6e9f79e420198019f44bb5154e3d6a40d3124d5cc26edf1", size = 3777278 }
 
 [[package]]
 name = "numpy"
@@ -268,7 +268,7 @@ name = "opencv-python"
 version = "4.10.0.84"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", marker = "python_full_version >= '3.12'" },
+    { name = "numpy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/4a/e7/b70a2d9ab205110d715906fc8ec83fbb00404aeb3a37a0654fdb68eb0c8c/opencv-python-4.10.0.84.tar.gz", hash = "sha256:72d234e4582e9658ffea8e9cae5b63d488ad06994ef12d81dc303b17472f3526", size = 95103981 }
 wheels = [
