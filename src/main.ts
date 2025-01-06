@@ -1,14 +1,15 @@
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import path from 'path'
-import spawn from 'child_process'
+import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
 import started from 'electron-squirrel-startup'
 import { promisify } from 'util'
 import * as fs from 'fs'
+import kill from 'tree-kill'
 
 const readFile = promisify(fs.readFile)
 const unlinkFile = promisify(fs.unlink)
-
 let apiPort: number | null = null
+let server: ChildProcessWithoutNullStreams
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit()
@@ -16,11 +17,10 @@ if (started) {
 Menu.setApplicationMenu(null)
 
 const startServer = () => {
-  let server: spawn.ChildProcessWithoutNullStreams
   if (app.isPackaged) {
-    server = spawn.spawn(path.resolve(process.resourcesPath, 'main.dist', 'main.exe'))
+    server = spawn(path.resolve(process.resourcesPath, 'main.dist', 'main.exe'))
   } else {
-    server = spawn.spawn('uv', ['run', path.join(__dirname, '../../api/main.py')])
+    server = spawn('uv', ['run', path.join(__dirname, '../../api/main.py')])
   }
   server.stdout.on('data', (data) => {
     console.log(`${data}`)
@@ -61,20 +61,21 @@ const readPort = async () => {
   }
   try {
     let data: string
-    while (true) {
+    const maxRetries = 5
+    let retries = 0
+    while (retries < maxRetries) {
       try {
         data = await readFile(portInfoPath, 'utf8')
         break
       } catch (e) {
-        const code = (e as { code: string }).code
-        if (code !== 'ENOENT') {
-          await new Promise((resolve) => setTimeout(resolve, 100))
-        } else {
+        retries++
+        if (retries === maxRetries) {
           throw e
         }
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
-    const json = JSON.parse(data)
+    const json = JSON.parse(data!)
     apiPort = json.port
     await unlinkFile(portInfoPath)
   } catch (e) {
@@ -95,11 +96,9 @@ app.on('ready', () => {
   createWindow()
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
+  if (server) {
+    kill(server.pid as number)
   }
+  app.quit()
 })
