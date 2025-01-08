@@ -2,12 +2,8 @@ import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import path from 'path'
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
 import started from 'electron-squirrel-startup'
-import { promisify } from 'util'
-import * as fs from 'fs'
 import kill from 'tree-kill'
 
-const readFile = promisify(fs.readFile)
-const unlinkFile = promisify(fs.unlink)
 let apiPort: number | null = null
 let server: ChildProcessWithoutNullStreams
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -22,9 +18,22 @@ const startServer = () => {
   } else {
     server = spawn('uv', ['run', path.join(__dirname, '../../api/main.py')])
   }
-  server.stdout.on('data', (data) => {
-    console.log(`${data}`)
-  })
+  const onData = (data: Buffer) => {
+    const message = data.toString()
+    console.log(`${message}`)
+    const portMatch = message.match(/PORT:\s*(\d+)/)
+    if (portMatch) {
+      apiPort = parseInt(portMatch[1], 10)
+      console.log(`API Port: ${apiPort}`)
+      createWindow()
+      // 移除监听器
+      server.stdout.off('data', onData)
+      server.stdout.on('data', (data) => {
+        console.log(`${data}`)
+      })
+    }
+  }
+  server.stdout.on('data', onData)
   server.stderr.on('data', (data) => {
     console.error(`${data}`)
   })
@@ -52,48 +61,11 @@ const createWindow = () => {
   }
 }
 
-const readPort = async () => {
-  let portInfoPath: string
-  if (app.isPackaged) {
-    portInfoPath = path.resolve(process.resourcesPath, 'main.dist', 'port.json')
-  } else {
-    portInfoPath = path.resolve(__dirname, '../../api/port.json')
-  }
-  try {
-    let data: string
-    const maxRetries = 5
-    let retries = 0
-    while (retries < maxRetries) {
-      try {
-        data = await readFile(portInfoPath, 'utf8')
-        break
-      } catch (e) {
-        retries++
-        if (retries === maxRetries) {
-          throw e
-        }
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      }
-    }
-    const json = JSON.parse(data!)
-    apiPort = json.port
-    await unlinkFile(portInfoPath)
-  } catch (e) {
-    console.error(e)
-    app.quit()
-  }
-}
-
-startServer()
-
 app.on('ready', () => {
   ipcMain.handle('get-port', async () => {
-    if (apiPort === null) {
-      await readPort()
-    }
     return apiPort
   })
-  createWindow()
+  startServer()
 })
 
 app.on('window-all-closed', () => {

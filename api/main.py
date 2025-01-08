@@ -4,9 +4,7 @@
 
 from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import os
 from utils import find_free_port
-import json
 from predict import predict_number
 from conway import matrix_transpose
 from depedencies import get_connection
@@ -64,9 +62,7 @@ async def conway(data: Matrix, con: Connection = Depends(get_connection)):
 
 def main():
     port = find_free_port()
-    port_info_path = os.path.join(os.path.dirname(__file__), "port.json")
-    with open(port_info_path, "w") as f:
-        json.dump({"port": port}, f)
+    print(f"PORT: {port}", flush=True)
     import uvicorn
 
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info", reload=True)
